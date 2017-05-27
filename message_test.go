@@ -73,3 +73,27 @@ func TestMessageHostnameError(t *testing.T) {
 		t.Log("Given hostname value : ", m.Host)
 	}
 }
+
+func TestParseBool(t *testing.T) {
+
+	ok := getOutput("true")
+	if !ok {
+		t.Fail()
+		t.Log("Expected status : true")
+		t.Log("Given status : ", ok)
+	}
+
+	no := getOutput("false")
+	if no {
+		t.Fail()
+		t.Log("Expected status : false")
+		t.Log("Given status : ", no)
+	}
+
+	auto := getOutput("auto")
+	if !auto {
+		t.Fail()
+		t.Log("Expected status : true")
+		t.Log("Given status : ", auto)
+	}
+}

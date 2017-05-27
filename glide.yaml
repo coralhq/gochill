@@ -1,3 +1,4 @@
 package: .
 import:
 - package: github.com/bitly/go-simplejson
+- package: github.com/Sirupsen/logrus

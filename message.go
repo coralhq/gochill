@@ -14,6 +14,7 @@ do this to initiate host, service and timestamp value.
 
 import (
 	"os"
+	"strconv"
 	"time"
 )
 
@@ -32,6 +33,7 @@ type Message struct {
 	FullMessage  string `json:"full_message,omitempty"`
 	Timestamp    int64  `json:"timestamp"`
 	Level        int    `json:"level"`
+	OutputJSON   bool   `json:"-"`
 	osEngine     OSHostEngine
 }
 
@@ -46,6 +48,17 @@ func (m *Message) ToMap() map[string]interface{} {
 	maps["short_message"] = m.ShortMessage
 	maps["timestamp"] = m.Timestamp
 	maps["level"] = m.Level
+	maps["full_message"] = m.FullMessage
+
+	return maps
+}
+
+//TextMap used to convert all exported fields into map string interface
+func (m *Message) TextMap() map[string]interface{} {
+	var maps map[string]interface{}
+	maps = make(map[string]interface{})
+
+	maps["short_message"] = m.ShortMessage
 	maps["full_message"] = m.FullMessage
 
 	return maps
@@ -66,7 +79,17 @@ func NewMessage(level int) *Message {
 	m.Level = level
 	m.osEngine = os.Hostname
 	m.Host = parseHostname(m.osEngine)
+	m.OutputJSON = getOutput(os.Getenv(EnvOutputJSONFormat))
 	return &m
+}
+
+func getOutput(status string) bool {
+	format, err := strconv.ParseBool(status)
+	if err != nil {
+		return true
+	}
+
+	return format
 }
 
 //Msg used to give message contains with short and (optional) full message

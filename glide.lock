@@ -1,6 +1,8 @@
-hash: 2c321cfb8d57ecac7899cab3cbd61892e2598d05b32bb1c6652f68038adf8f1d
-updated: 2016-09-03T11:48:19.180687945+07:00
+hash: e4bdccc274fcfd07805dee6005b7aa1c8756b95a4e0b3df48def69aa72e17669
+updated: 2017-05-03T21:59:11.836689995+07:00
 imports:
 - name: github.com/bitly/go-simplejson
   version: aabad6e819789e569bd6aabf444c935aa9ba1e44
-devImports: []
+- name: github.com/Sirupsen/logrus
+  version: ba1b36c82c5e05c4f912a88eab0dcd91a171688f
+testImports: []

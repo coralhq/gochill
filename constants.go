@@ -10,6 +10,9 @@ const (
 	//EnvServiceKeyName used as key to get service name from os environment variable
 	EnvServiceKeyName string = "SERVICE_NAME"
 
+	//EnvOutputJSONFormat used as key to set output to json or text
+	EnvOutputJSONFormat string = "JSON_FORMAT"
+
 	//Version indicate version of the payload
 	Version int = 1
 

@@ -4,6 +4,8 @@ import (
 	"io"
 	"log"
 	"os"
+
+	"github.com/Sirupsen/logrus"
 )
 
 //Logger used to create new log instance
@@ -33,49 +35,84 @@ func NewCustomOutput(output io.Writer) {
 func Alert(msg MessageLog, options ...Option) {
 	message := buildMessage(LevelAlert, msg, options)
 	NewCustomOutput(io.MultiWriter(os.Stderr, CustomOutput))
-	Logger.Println(string(message))
+
+	if getOutput(os.Getenv(EnvOutputJSONFormat)) {
+		Logger.Println(string(message))
+	} else {
+		logrus.Warning(string(message))
+	}
 }
 
 //Info used to create log message with info level
 func Info(msg MessageLog, options ...Option) {
 	message := buildMessage(LevelInfo, msg, options)
 	NewCustomOutput(io.MultiWriter(os.Stdout, CustomOutput))
-	Logger.Println(string(message))
+
+	if getOutput(os.Getenv(EnvOutputJSONFormat)) {
+		Logger.Println(string(message))
+	} else {
+		logrus.Info(string(message))
+	}
 }
 
 //Critical used to create log message with critical level
 func Critical(msg MessageLog, options ...Option) {
 	message := buildMessage(LevelCritical, msg, options)
 	NewCustomOutput(io.MultiWriter(os.Stderr, CustomOutput))
-	Logger.Println(string(message))
+
+	if getOutput(os.Getenv(EnvOutputJSONFormat)) {
+		Logger.Println(string(message))
+	} else {
+		logrus.Fatal(string(message))
+	}
 }
 
 //Error used to create log message with error level
 func Error(msg MessageLog, options ...Option) {
 	message := buildMessage(LevelError, msg, options)
 	NewCustomOutput(io.MultiWriter(os.Stderr, CustomOutput))
-	Logger.Println(string(message))
+
+	if getOutput(os.Getenv(EnvOutputJSONFormat)) {
+		Logger.Println(string(message))
+	} else {
+		logrus.Error(string(message))
+	}
 }
 
 //Warn used to create log message with warning level
 func Warn(msg MessageLog, options ...Option) {
 	message := buildMessage(LevelWarning, msg, options)
 	NewCustomOutput(io.MultiWriter(os.Stdout, CustomOutput))
-	Logger.Println(string(message))
+
+	if getOutput(os.Getenv(EnvOutputJSONFormat)) {
+		Logger.Println(string(message))
+	} else {
+		logrus.Warn(string(message))
+	}
 }
 
 //Notice used to create log message with warning level
 func Notice(msg MessageLog, options ...Option) {
 	message := buildMessage(LevelNotice, msg, options)
 	NewCustomOutput(io.MultiWriter(os.Stdout, CustomOutput))
-	Logger.Println(string(message))
+
+	if getOutput(os.Getenv(EnvOutputJSONFormat)) {
+		Logger.Println(string(message))
+	} else {
+		logrus.Warn(string(message))
+	}
 }
 
 //Debug used to create log message with warning level
 func Debug(msg MessageLog, options ...Option) {
 	message := buildMessage(LevelDebug, msg, options)
 	NewCustomOutput(io.MultiWriter(os.Stdout, CustomOutput))
-	Logger.Println(string(message))
+
+	if getOutput(os.Getenv(EnvOutputJSONFormat)) {
+		Logger.Println(string(message))
+	} else {
+		logrus.Debug(string(message))
+	}
 }
 
 //buildMessage is a private function used to build message structure
@@ -85,7 +122,19 @@ func buildMessage(level int, msg MessageLog, options []Option) []byte {
 	m.FullMessage = msg.Full
 
 	mergedOptions := MergeOptionsToMap(options)
+
+	if !m.OutputJSON {
+		texts := messageText(m, mergedOptions)
+		return texts
+	}
+
 	maps := CombineMaps(m.ToMap(), mergedOptions)
+
+	return MapToJSON(maps)
+}
+
+func messageText(m *Message, options map[string]interface{}) []byte {
+	maps := CombineMaps(m.TextMap(), options)
 
 	return MapToJSON(maps)
 }
