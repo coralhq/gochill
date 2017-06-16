@@ -1,5 +1,7 @@
 package gochill
 
+import "fmt"
+
 //Option struct used to set optional field to the log
 type Option struct {
 	Key   string
@@ -9,7 +11,7 @@ type Option struct {
 //Set used to set new key value
 func (o *Option) Set(key string, value interface{}) {
 	o.Key = "_" + key
-	o.Value = value
+	o.Value = fmt.Sprintf("%v", value)
 }
 
 //NewOption used to create new Option instance
